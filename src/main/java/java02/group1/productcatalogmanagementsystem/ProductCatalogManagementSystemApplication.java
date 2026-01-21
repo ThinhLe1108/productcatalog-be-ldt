@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
 @OpenAPIDefinition(info = @Info(title = "ProductCatalogManagementSystem", version = "1.0", description = "Information"))
@@ -15,6 +16,8 @@ public class ProductCatalogManagementSystemApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ProductCatalogManagementSystemApplication.class, args);
+		System.out.println(new BCryptPasswordEncoder().encode("123456"));
+
 	}
 
 }
