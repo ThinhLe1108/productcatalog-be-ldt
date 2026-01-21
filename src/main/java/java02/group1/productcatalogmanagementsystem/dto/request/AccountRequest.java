@@ -1,6 +1,5 @@
 package java02.group1.productcatalogmanagementsystem.dto.request;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java02.group1.productcatalogmanagementsystem.entity.entity.RoleName;
@@ -19,10 +18,6 @@ public class AccountRequest {
     private String fullName;
 
     @NotNull(message = "roleName cannot be null!")
-    @Schema(
-            description = "Role of account",
-            allowableValues = {"ADMIN", "CUSTOMER"}
-    )
     private RoleName roleName;
 
 }
