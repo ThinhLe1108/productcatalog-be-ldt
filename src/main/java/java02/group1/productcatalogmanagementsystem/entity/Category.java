@@ -2,20 +2,14 @@ package java02.group1.productcatalogmanagementsystem.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 
 @Entity
-@Table(
-        name = "Categories",
-        indexes = {
-                @Index(name = "IX_Categories_Name", columnList = "name")
-        }
-)
-@Getter
-@Setter
+@Data
 public class Category {
 
     @Id

@@ -4,7 +4,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 
-@Getter @Setter
+@Data
 @NoArgsConstructor @AllArgsConstructor @Builder
 public class ProductResponse {
     private Long id;
@@ -12,6 +12,8 @@ public class ProductResponse {
     private String categoryName;
 
     private String name;
+    private String imageUrl;
+    private String description;
 
     private BigDecimal price;
     private Integer stockQuantity;

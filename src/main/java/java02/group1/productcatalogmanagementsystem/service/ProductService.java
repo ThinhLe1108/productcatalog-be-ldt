@@ -24,12 +24,8 @@ public class ProductService {
     private final ModelMapper modelMapper;
     private final CloudinaryService cloudinaryService;
 
-    /**
-     * Lấy sản phẩm ACTIVE, có thể filter theo categoryId (nullable)
-     */
     public List<ProductResponse> getActiveProducts(Long categoryId) {
 
-        // nếu có categoryId thì validate category tồn tại trước
         if (categoryId != null) {
             categoryRepository.findById(categoryId)
                     .orElseThrow(() -> new EntityNotFoundException("Category not found with id: " + categoryId));
@@ -46,32 +42,14 @@ public class ProductService {
                 .toList();
     }
 
-    /**
-     * Teammate: Filter theo category (không ép ACTIVE).
-     * Nếu bạn muốn chỉ lấy ACTIVE thì đổi repository method / thêm điều kiện status.
-     */
-    public List<ProductResponse> filterByCategory(Long categoryId) {
-        // validate category tồn tại để tránh categoryId "rác"
-        categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new EntityNotFoundException("Category not found with id: " + categoryId));
-
-        return productRepository.findByCategory_Id(categoryId)
-                .stream()
-                .map(this::toResponse)
-                .toList();
-    }
-
-    /**
-     * Teammate: Create Product (có upload ảnh)
-     */
-    public ProductResponse createProduct(ProductRequest dto, MultipartFile image) {
+    public ProductResponse createProduct(ProductRequest dto) {
 
         Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("Category not found with id: " + dto.getCategoryId()));
 
-        // Nếu client không gửi ảnh, bạn có thể để null hoặc throw. Mình để null-safe:
-        String imageUrl = (image != null && !image.isEmpty())
-                ? cloudinaryService.uploadImage(image)
+
+        String imageUrl = (dto.getImage() != null && !dto.getImage().isEmpty())
+                ? cloudinaryService.uploadImage(dto.getImage())
                 : null;
 
         Product product = new Product();
@@ -82,7 +60,6 @@ public class ProductService {
         product.setImageUrl(imageUrl);
         product.setCategory(category);
 
-        // nếu hệ thống bạn dùng status cho soft delete, tạo mới nên set ACTIVE
         product.setStatus("ACTIVE");
 
         Product savedProduct = productRepository.save(product);
@@ -93,7 +70,6 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
 
-        // Validate category nếu có truyền categoryId
         if (req.getCategoryId() != null) {
             Category category = categoryRepository.findById(req.getCategoryId())
                     .orElseThrow(() -> new EntityNotFoundException(
@@ -137,7 +113,6 @@ public class ProductService {
             resp.setCategoryName(null);
         }
 
-        // double -> BigDecimal an toàn (nếu response đang null)
         if (resp.getPrice() == null) {
             resp.setPrice(java.math.BigDecimal.valueOf(p.getPrice()));
         }
