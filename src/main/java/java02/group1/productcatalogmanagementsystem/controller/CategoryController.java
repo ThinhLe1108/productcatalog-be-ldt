@@ -15,7 +15,6 @@ import java.util.List;
 @RequiredArgsConstructor
 
 public class CategoryController {
-    @Autowired
     private final CategoryService categoryService;
 
     @GetMapping
