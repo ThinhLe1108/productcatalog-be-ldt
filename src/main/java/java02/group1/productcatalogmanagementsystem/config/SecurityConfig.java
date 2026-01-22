@@ -49,11 +49,19 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         req -> req
-                                .requestMatchers("/**")
-                                .permitAll()
-                                .anyRequest()
-                                .authenticated()
-
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/api/accounts/login",
+                                "/api/accounts/register"
+                        ).permitAll()
+                        .requestMatchers("/api/admin/**")
+                        .hasRole("ADMIN")
+                        .requestMatchers("/api/products/**")
+                        .hasAnyRole("ADMIN", "CUSTOMER")
+                        .anyRequest()
+                        .authenticated()
                 )
                 .exceptionHandling(handler -> handler.accessDeniedHandler(customAccessDeniedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

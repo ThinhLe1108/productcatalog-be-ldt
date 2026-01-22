@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java02.group1.productcatalogmanagementsystem.entity.Account;
 import java02.group1.productcatalogmanagementsystem.exception.exception.AuthenticationException;
 import java02.group1.productcatalogmanagementsystem.service.TokenService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.BeanRegistrarDslMarker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,12 +28,18 @@ import java.util.List;
 @Component
 public class Filter extends OncePerRequestFilter {
 
-    @Autowired
-    @Qualifier("handlerExceptionResolver")
-    private HandlerExceptionResolver resolver;
 
-    @Autowired
-    private TokenService tokenService;
+    private final TokenService tokenService;
+    private final HandlerExceptionResolver resolver;
+
+    public Filter(
+            TokenService tokenService,
+            @Qualifier("handlerExceptionResolver")
+            HandlerExceptionResolver resolver
+    ) {
+        this.tokenService = tokenService;
+        this.resolver = resolver;
+    }
 
     private static final List<String> PUBLIC_API = List.of(
             "GET:/swagger-ui/**",
