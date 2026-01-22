@@ -1,12 +1,15 @@
 package java02.group1.productcatalogmanagementsystem.service;
 
 import java02.group1.productcatalogmanagementsystem.dto.request.ProductRequest;
+import java02.group1.productcatalogmanagementsystem.dto.request.UpdateProductRequest;
 import java02.group1.productcatalogmanagementsystem.dto.response.ProductResponse;
 import java02.group1.productcatalogmanagementsystem.entity.Category;
 import java02.group1.productcatalogmanagementsystem.entity.Product;
 import java02.group1.productcatalogmanagementsystem.repository.CategoryRepository;
 import java02.group1.productcatalogmanagementsystem.repository.ProductRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,34 +18,61 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-    private final CategoryRepository categoryRepository;
+
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
+    private final ModelMapper modelMapper;
     private final CloudinaryService cloudinaryService;
 
-    public List<ProductResponse> filterByCategory(Long categoryId) {
+    /**
+     * Lấy sản phẩm ACTIVE, có thể filter theo categoryId (nullable)
+     */
+    public List<ProductResponse> getActiveProducts(Long categoryId) {
 
-        return productRepository.findByCategory_Id(categoryId)
+        // nếu có categoryId thì validate category tồn tại trước
+        if (categoryId != null) {
+            categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new EntityNotFoundException("Category not found with id: " + categoryId));
+
+            return productRepository.findByStatusAndCategory_Id("ACTIVE", categoryId)
+                    .stream()
+                    .map(this::toResponse)
+                    .toList();
+        }
+
+        return productRepository.findByStatus("ACTIVE")
                 .stream()
-                .map(product -> {
-                    ProductResponse dto = new ProductResponse();
-                    dto.setId(product.getId());
-                    dto.setName(product.getName());
-                    dto.setDescription(product.getDescription());
-                    dto.setPrice(product.getPrice());
-                    dto.setImageUrl(product.getImageUrl());
-                    dto.setCategoryName(product.getCategory().getName());
-                    return dto;
-                })
+                .map(this::toResponse)
                 .toList();
     }
 
-    //Create Product ( co upload anh )
+    /**
+     * Teammate: Filter theo category (không ép ACTIVE).
+     * Nếu bạn muốn chỉ lấy ACTIVE thì đổi repository method / thêm điều kiện status.
+     */
+    public List<ProductResponse> filterByCategory(Long categoryId) {
+        // validate category tồn tại để tránh categoryId "rác"
+        categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found with id: " + categoryId));
+
+        return productRepository.findByCategory_Id(categoryId)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    /**
+     * Teammate: Create Product (có upload ảnh)
+     */
     public ProductResponse createProduct(ProductRequest dto, MultipartFile image) {
 
         Category category = categoryRepository.findById(dto.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Category not found with id: " + dto.getCategoryId()));
 
-        String imageUrl = cloudinaryService.uploadImage(image);
+        // Nếu client không gửi ảnh, bạn có thể để null hoặc throw. Mình để null-safe:
+        String imageUrl = (image != null && !image.isEmpty())
+                ? cloudinaryService.uploadImage(image)
+                : null;
 
         Product product = new Product();
         product.setName(dto.getName());
@@ -52,17 +82,68 @@ public class ProductService {
         product.setImageUrl(imageUrl);
         product.setCategory(category);
 
+        // nếu hệ thống bạn dùng status cho soft delete, tạo mới nên set ACTIVE
+        product.setStatus("ACTIVE");
+
         Product savedProduct = productRepository.save(product);
-
-        ProductResponse response = new ProductResponse();
-        response.setId(savedProduct.getId());
-        response.setName(savedProduct.getName());
-        response.setDescription(savedProduct.getDescription());
-        response.setPrice(savedProduct.getPrice());
-        response.setImageUrl(savedProduct.getImageUrl());
-        response.setCategoryName(category.getName());
-
-        return response;
+        return toResponse(savedProduct);
     }
 
+    public ProductResponse updateProduct(Long id, UpdateProductRequest req) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
+
+        // Validate category nếu có truyền categoryId
+        if (req.getCategoryId() != null) {
+            Category category = categoryRepository.findById(req.getCategoryId())
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            "Category not found with id: " + req.getCategoryId()));
+            product.setCategory(category);
+        }
+
+        product.setName(req.getName());
+        product.setDescription(req.getDescription());
+        product.setPrice(req.getPrice());
+        product.setStockQuantity(req.getStockQuantity());
+
+        if (req.getStatus() != null && !req.getStatus().isBlank()) {
+            product.setStatus(req.getStatus().trim().toUpperCase());
+        }
+
+        Product saved = productRepository.save(product);
+        return toResponse(saved);
+    }
+
+    public void deleteProduct(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
+
+        if (!"ACTIVE".equalsIgnoreCase(product.getStatus())) {
+            throw new EntityNotFoundException("Product is not ACTIVE or already deleted");
+        }
+
+        product.setStatus("INACTIVE");
+        productRepository.save(product);
+    }
+
+    private ProductResponse toResponse(Product p) {
+        ProductResponse resp = modelMapper.map(p, ProductResponse.class);
+
+        if (p.getCategory() != null) {
+            resp.setCategoryId(p.getCategory().getId());
+            resp.setCategoryName(p.getCategory().getName());
+        } else {
+            resp.setCategoryId(null);
+            resp.setCategoryName(null);
+        }
+
+        // double -> BigDecimal an toàn (nếu response đang null)
+        if (resp.getPrice() == null) {
+            resp.setPrice(java.math.BigDecimal.valueOf(p.getPrice()));
+        }
+
+        resp.setOutOfStock(p.getStockQuantity() == 0);
+
+        return resp;
+    }
 }

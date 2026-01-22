@@ -2,16 +2,25 @@ package java02.group1.productcatalogmanagementsystem.controller;
 
 import jakarta.validation.Valid;
 import java02.group1.productcatalogmanagementsystem.dto.request.ProductRequest;
+import java02.group1.productcatalogmanagementsystem.dto.request.UpdateProductRequest;
 import java02.group1.productcatalogmanagementsystem.dto.response.ProductResponse;
 import java02.group1.productcatalogmanagementsystem.service.ProductService;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Collections;
+import java.util.Map;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
+@Tag(name = "Admin Products", description = "Administrative product management endpoints")
+@SecurityRequirement(name = "api")
 @RequestMapping("/api/admin/products")
 @PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
@@ -24,5 +33,24 @@ public class AdminProductController {
             @RequestPart("image") MultipartFile image) {
 
         return ResponseEntity.ok(productService.createProduct(productDTO, image));
+    }
+
+        // 9) UPDATE product
+    // PUT /api/products/{id}
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ProductResponse> updateProduct(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateProductRequest request) {
+        return ResponseEntity.ok(productService.updateProduct(id, request));
+    }
+
+    // 10) DELETE product
+    // DELETE /api/products/{id}
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Map<String, String>> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.ok(Collections.singletonMap("message", "Product deleted successfully"));
     }
 }

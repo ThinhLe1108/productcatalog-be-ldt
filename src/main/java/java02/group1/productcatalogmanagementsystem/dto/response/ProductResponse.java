@@ -1,21 +1,21 @@
 package java02.group1.productcatalogmanagementsystem.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor @Builder
 public class ProductResponse {
     private Long id;
-    private String name;
-    private String description;
-    private Double price;
-    private String imageUrl;
+    private Long categoryId;
     private String categoryName;
+
+    private String name;
+
+    private BigDecimal price;
+    private Integer stockQuantity;
+    private String status;
+    private boolean outOfStock;
+
 }
