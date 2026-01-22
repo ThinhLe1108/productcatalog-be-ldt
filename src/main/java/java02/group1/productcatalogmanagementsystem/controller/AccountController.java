@@ -6,6 +6,7 @@ import java02.group1.productcatalogmanagementsystem.dto.request.AccountRequest;
 import java02.group1.productcatalogmanagementsystem.dto.request.LoginRequest;
 import java02.group1.productcatalogmanagementsystem.dto.response.AccountResponse;
 import java02.group1.productcatalogmanagementsystem.service.AccountService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

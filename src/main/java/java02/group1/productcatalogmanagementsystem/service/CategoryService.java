@@ -2,7 +2,6 @@ package java02.group1.productcatalogmanagementsystem.service;
 
 import java02.group1.productcatalogmanagementsystem.entity.Category;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java02.group1.productcatalogmanagementsystem.repository.CategoryRepository;
@@ -10,9 +9,9 @@ import java02.group1.productcatalogmanagementsystem.repository.CategoryRepositor
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class CategoryService {
-    private final CategoryRepository categoryRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Transactional
     public List<Category> getAllCategories() {
