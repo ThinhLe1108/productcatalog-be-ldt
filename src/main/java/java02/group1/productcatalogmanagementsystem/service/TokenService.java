@@ -7,6 +7,7 @@ import io.jsonwebtoken.security.Keys;
 import java02.group1.productcatalogmanagementsystem.entity.Account;
 import java02.group1.productcatalogmanagementsystem.repository.AccountRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +16,11 @@ import java.util.Date;
 import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
 public class TokenService {
 
-    @Autowired
-    AccountRepository accountRepository;
+
+    private final AccountRepository accountRepository;
 
     private final String SECRET_KEY = "123456789999999999999999999999999999999999999999999999999999999999999999999999999999";
 
@@ -31,6 +33,7 @@ public class TokenService {
     public String generateToken(Account account){
         return Jwts.builder()
                 .subject(account.getAccountId() + "")
+                .claim("role",account.getRole().getRoleName().name())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7))
                 .signWith(getSignInKey())

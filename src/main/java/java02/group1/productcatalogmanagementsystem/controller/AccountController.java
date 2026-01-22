@@ -9,6 +9,7 @@ import java02.group1.productcatalogmanagementsystem.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,12 +31,14 @@ public class AccountController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER')")
     public ResponseEntity<?> delete(@PathVariable long id) {
         accountService.deleteAccount(id);
         return ResponseEntity.ok("Xóa tài khoản thành công");
     }
 
     @GetMapping("/current")
+    @PreAuthorize("hasAnyRole('ADMIN','CUSTOMER')")
     public ResponseEntity getCurrentAccount(){
 
         return ResponseEntity.ok(accountService.getCurrentAccount());
