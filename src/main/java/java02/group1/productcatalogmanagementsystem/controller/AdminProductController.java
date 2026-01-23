@@ -43,8 +43,8 @@ public class AdminProductController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Map<String, String>> deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Product deleted successfully"));
+    public ResponseEntity<Map<String, String>> deactivateProduct(@PathVariable Long id) {
+        productService.deactivateProduct(id);
+        return ResponseEntity.ok(Collections.singletonMap("message", "Product deactivate successfully!"));
     }
 }
