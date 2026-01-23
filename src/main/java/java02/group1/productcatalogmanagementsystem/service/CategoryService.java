@@ -1,5 +1,6 @@
 package java02.group1.productcatalogmanagementsystem.service;
 
+import java02.group1.productcatalogmanagementsystem.dto.request.CategoryRequest;
 import java02.group1.productcatalogmanagementsystem.entity.Category;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,15 +32,16 @@ public class CategoryService {
     }
 
     @Transactional
-    public Category create(Category category) {
+    public Category create(CategoryRequest categoryRequest) {
+        Category category = new Category();
+        category.setName(categoryRequest.getName());
         return categoryRepository.save(category);
     }
 
     @Transactional
-    public Category update(Long id, Category updatedCategory) {
+    public Category update(Long id, CategoryRequest updatedCategory) {
         Category existingCategory = getById(id);
         existingCategory.setName(updatedCategory.getName());
-        existingCategory.setDescription(updatedCategory.getDescription());
         return categoryRepository.save(existingCategory);
     }
 }

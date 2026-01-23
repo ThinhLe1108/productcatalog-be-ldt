@@ -19,9 +19,6 @@ public class Category {
     @Column(nullable = false, length = 150)
     private String name;
 
-    @Column(length = 500)
-    private String description;
-
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Product> products;

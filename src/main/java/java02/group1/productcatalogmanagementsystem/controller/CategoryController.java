@@ -1,5 +1,6 @@
 package java02.group1.productcatalogmanagementsystem.controller;
 
+import java02.group1.productcatalogmanagementsystem.dto.request.CategoryRequest;
 import java02.group1.productcatalogmanagementsystem.entity.Category;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -33,12 +34,12 @@ public class CategoryController {
     }
 
     @PostMapping("/create")
-    public Category create(@RequestBody Category category) {
+    public Category create(@RequestBody CategoryRequest category) {
         return categoryService.create(category);
     }
 
     @PutMapping("/id/{id}")
-    public Category update(@PathVariable Long id, @RequestBody Category updatedCategory) {
+    public Category update(@PathVariable Long id, @RequestBody CategoryRequest updatedCategory) {
         return categoryService.update(id, updatedCategory);
     }
 
