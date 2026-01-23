@@ -1,6 +1,5 @@
 package java02.group1.productcatalogmanagementsystem.service;
 
-import jakarta.transaction.Transactional;
 import java02.group1.productcatalogmanagementsystem.dto.request.ProductRequest;
 import java02.group1.productcatalogmanagementsystem.dto.request.UpdateProductRequest;
 import java02.group1.productcatalogmanagementsystem.dto.response.ProductResponse;
@@ -91,6 +90,18 @@ public class ProductService {
         return toResponse(saved);
     }
 
+    public void deleteProduct(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
+
+        if (!"ACTIVE".equalsIgnoreCase(product.getStatus())) {
+            throw new EntityNotFoundException("Product is not ACTIVE or already deleted");
+        }
+
+        product.setStatus("INACTIVE");
+        productRepository.save(product);
+    }
+
     private ProductResponse toResponse(Product p) {
         ProductResponse resp = modelMapper.map(p, ProductResponse.class);
 
@@ -109,39 +120,5 @@ public class ProductService {
         resp.setOutOfStock(p.getStockQuantity() == 0);
 
         return resp;
-    }
-
-    @Transactional
-    public void deactivateProduct(Long id) {
-        Product product = productRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
-
-        if (!"ACTIVE".equalsIgnoreCase(product.getStatus())) {
-            throw new IllegalStateException("Product is already inactive!");
-        }
-
-        product.setStatus("INACTIVE");
-    }
-
-    @Transactional
-    public ProductResponse getActiveProductById(Long id) {
-
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
-
-        if (!"ACTIVE".equalsIgnoreCase(product.getStatus())) {
-            throw new EntityNotFoundException("Product not found");
-        }
-
-        return toResponse(product);
-    }
-
-    @Transactional
-    public List<ProductResponse> searchActiveProductsByName(String name) {
-
-        return productRepository
-                .findByStatusAndNameContainingIgnoreCase("ACTIVE", name)
-                .stream()
-                .map(this::toResponse)
-                .toList();
     }
 }

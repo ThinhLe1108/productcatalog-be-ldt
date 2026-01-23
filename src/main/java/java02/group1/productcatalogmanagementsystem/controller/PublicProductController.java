@@ -33,15 +33,4 @@ public class PublicProductController {
         return ResponseEntity.ok(productService.getActiveProducts(null));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductResponse> getProductDetail(
-            @PathVariable Long id) {
-        return ResponseEntity.ok(productService.getActiveProductById(id));
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<List<ProductResponse>> searchByName(
-            @RequestParam String name) {
-        return ResponseEntity.ok(productService.searchActiveProductsByName(name));
-    }
 }
