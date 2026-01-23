@@ -39,23 +39,16 @@ public class CategoryController {
     }
 
     @PostMapping("/create")
-<<<<<<< src/main/java/java02/group1/productcatalogmanagementsystem/controller/CategoryController.java
-    public Category create(@RequestBody CategoryRequest category) {
-=======
     @PreAuthorize("hasRole('ADMIN')")
     public Category create(@RequestBody  CategoryRequest category) {
->>>>>>> src/main/java/java02/group1/productcatalogmanagementsystem/controller/CategoryController.java
         return categoryService.create(category);
     }
 
     @PutMapping("/id/{id}")
-<<<<<<< src/main/java/java02/group1/productcatalogmanagementsystem/controller/CategoryController.java
-    public Category update(@PathVariable Long id, @RequestBody CategoryRequest updatedCategory) {
-=======
     @PreAuthorize("hasRole('ADMIN')")
-    public Category update(@PathVariable Long id, @RequestBody CaCategoryRequest pdatedCategory) {
->>>>>>> src/main/java/java02/group1/productcatalogmanagementsystem/controller/CategoryController.java
+    public Category update(@PathVariable Long id, @RequestBody CategoryRequest updatedCategory) {
         return categoryService.update(id, updatedCategory);
     }
 
 }
+
