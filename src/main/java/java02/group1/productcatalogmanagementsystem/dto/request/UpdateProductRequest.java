@@ -27,6 +27,9 @@ public class UpdateProductRequest {
     // ACTIVE / INACTIVE
     private String status;
 
+    // Optional: URL ảnh sản phẩm (có thể lấy từ endpoint upload image)
+    private String imageUrl;
+
     // Optional: bạn đang dùng FK column categories_id, update theo categoryId (id của Category)
     @Min(value = 1, message = "categoryId must be >= 1")
     private Long categoryId;

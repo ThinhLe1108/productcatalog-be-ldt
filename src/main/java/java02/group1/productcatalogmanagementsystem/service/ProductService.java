@@ -82,6 +82,11 @@ public class ProductService {
         product.setPrice(req.getPrice());
         product.setStockQuantity(req.getStockQuantity());
 
+        // Update imageUrl if provided
+        if (req.getImageUrl() != null && !req.getImageUrl().isBlank()) {
+            product.setImageUrl(req.getImageUrl().trim());
+        }
+
         if (req.getStatus() != null && !req.getStatus().isBlank()) {
             product.setStatus(req.getStatus().trim().toUpperCase());
         }
