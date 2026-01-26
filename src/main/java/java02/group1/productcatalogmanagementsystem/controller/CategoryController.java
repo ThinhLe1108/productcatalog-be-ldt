@@ -40,7 +40,7 @@ public class CategoryController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
-    public Category create(@RequestBody  CategoryRequest category) {
+    public Category create(@RequestBody CategoryRequest category) {
         return categoryService.create(category);
     }
 
@@ -50,5 +50,10 @@ public class CategoryController {
         return categoryService.update(id, updatedCategory);
     }
 
+    @DeleteMapping("/id/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void delete(@PathVariable Long id) {
+        categoryService.deleteCategory(id);
+    }
 }
 

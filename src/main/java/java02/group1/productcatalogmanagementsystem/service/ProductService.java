@@ -126,4 +126,25 @@ public class ProductService {
 
         return resp;
     }
+
+    public ProductResponse getActiveProductById(Long id) {
+
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
+
+        if (!"ACTIVE".equalsIgnoreCase(product.getStatus())) {
+            throw new EntityNotFoundException("Product not found");
+        }
+
+        return toResponse(product);
+    }
+
+    public List<ProductResponse> searchActiveProductsByName(String name) {
+
+        return productRepository
+                .findByStatusAndNameContainingIgnoreCase("ACTIVE", name)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
 }
