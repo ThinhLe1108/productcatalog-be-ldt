@@ -26,6 +26,7 @@ public class SecurityConfig {
 
     private final Filter filter;
 
+    private final CorsConfig corsConfig;
 
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
@@ -67,6 +68,7 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(handler -> handler.accessDeniedHandler(customAccessDeniedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(corsConfig, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).build();
     }
 
