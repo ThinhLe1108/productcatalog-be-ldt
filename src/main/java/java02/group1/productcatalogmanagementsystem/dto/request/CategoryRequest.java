@@ -7,6 +7,5 @@ import lombok.Data;
 @Data
 public class CategoryRequest {
     @NotBlank(message = "Category name cannot be blank.")
-    @Size(min = 3, max = 100, message = "Category name must be between 3 and 100 characters.")
     private String name;
 }
