@@ -1,5 +1,6 @@
 package java02.group1.productcatalogmanagementsystem.controller;
 
+import jakarta.validation.Valid;
 import java02.group1.productcatalogmanagementsystem.dto.request.CategoryRequest;
 import java02.group1.productcatalogmanagementsystem.entity.Category;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -39,7 +40,7 @@ public class CategoryController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Category> create(@RequestBody CategoryRequest category) {
+    public ResponseEntity<Category> create(@RequestBody @Valid CategoryRequest category) {
         return ResponseEntity.ok(categoryService.create(category));
     }
 
@@ -47,7 +48,7 @@ public class CategoryController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Category> update(
             @PathVariable Long id,
-            @RequestBody CategoryRequest updatedCategory) {
+            @RequestBody @Valid CategoryRequest updatedCategory) {
         return ResponseEntity.ok(categoryService.update(id, updatedCategory));
     }
 
