@@ -21,7 +21,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @Tag(name = "Admin Products", description = "Administrative product management endpoints")
 @SecurityRequirement(name = "api")
 @RequestMapping("/api/admin/products")
-//@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
 public class AdminProductController {
     private final ProductService productService;
