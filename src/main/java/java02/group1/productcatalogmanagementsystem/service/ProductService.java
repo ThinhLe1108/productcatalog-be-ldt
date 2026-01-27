@@ -8,6 +8,7 @@ import java02.group1.productcatalogmanagementsystem.entity.Product;
 import java02.group1.productcatalogmanagementsystem.repository.CategoryRepository;
 import java02.group1.productcatalogmanagementsystem.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java02.group1.productcatalogmanagementsystem.service.implement.ProductServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ProductService {
+public class ProductService implements ProductServiceImpl {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;

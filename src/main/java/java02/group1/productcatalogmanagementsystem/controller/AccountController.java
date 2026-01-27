@@ -5,9 +5,8 @@ import jakarta.validation.Valid;
 import java02.group1.productcatalogmanagementsystem.dto.request.AccountRequest;
 import java02.group1.productcatalogmanagementsystem.dto.request.LoginRequest;
 import java02.group1.productcatalogmanagementsystem.dto.response.AccountResponse;
-import java02.group1.productcatalogmanagementsystem.service.AccountService;
+import java02.group1.productcatalogmanagementsystem.service.implement.AccountServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AccountController {
 
-    private final AccountService accountService;
+    private final AccountServiceImpl accountService;
 
     @PostMapping("/register")
     public ResponseEntity<AccountResponse> register(@RequestBody @Valid AccountRequest request) {

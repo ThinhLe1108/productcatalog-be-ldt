@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import java02.group1.productcatalogmanagementsystem.dto.request.ProductRequest;
 import java02.group1.productcatalogmanagementsystem.dto.request.UpdateProductRequest;
 import java02.group1.productcatalogmanagementsystem.dto.response.ProductResponse;
-import java02.group1.productcatalogmanagementsystem.service.ProductService;
+import java02.group1.productcatalogmanagementsystem.service.implement.ProductServiceImpl;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Collections;
@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
 public class AdminProductController {
-    private final ProductService productService;
+    private final ProductServiceImpl productService;
     private final java02.group1.productcatalogmanagementsystem.service.CloudinaryService cloudinaryService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

@@ -4,6 +4,7 @@ import java02.group1.productcatalogmanagementsystem.dto.request.CategoryRequest;
 import java02.group1.productcatalogmanagementsystem.entity.Category;
 import jakarta.transaction.Transactional;
 import java02.group1.productcatalogmanagementsystem.repository.ProductRepository;
+import java02.group1.productcatalogmanagementsystem.service.implement.CategoryServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CategoryService {
+public class CategoryService implements CategoryServiceImpl {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
 

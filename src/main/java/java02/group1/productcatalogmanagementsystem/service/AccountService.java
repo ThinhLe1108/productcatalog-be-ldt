@@ -8,6 +8,7 @@ import java02.group1.productcatalogmanagementsystem.entity.Role;
 import java02.group1.productcatalogmanagementsystem.exception.exception.AuthenticationException;
 import java02.group1.productcatalogmanagementsystem.repository.AccountRepository;
 import java02.group1.productcatalogmanagementsystem.repository.RoleRepository;
+import java02.group1.productcatalogmanagementsystem.service.implement.AccountServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -25,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class AccountService implements UserDetailsService {
+public class AccountService implements AccountServiceImpl,UserDetailsService {
 
     private final AccountRepository accountRepository;
     private final RoleRepository roleRepository;
