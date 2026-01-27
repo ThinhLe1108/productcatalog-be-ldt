@@ -14,14 +14,12 @@ import java.util.List;
 @RestController
 @SecurityRequirement(name = "api")
 @RequestMapping("/api/categories")
-@PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
 
 public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public List<Category> getAllCategories() {
         return categoryService.getAllCategories();
     }
