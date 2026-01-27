@@ -79,7 +79,7 @@ public class CategoryControllerTest {
         category.setId(1L);
         category.setName("Electronics");
 
-        Mockito.when(categoryService.getById(1L))
+        Mockito.when(categoryService.getCategoryById(1L))
                 .thenReturn(category);
 
         mockMvc.perform(get("/api/categories/id/{id}", 1L))
@@ -97,7 +97,7 @@ public class CategoryControllerTest {
         category.setId(1L);
         category.setName("Books");
 
-        Mockito.when(categoryService.create(Mockito.any()))
+        Mockito.when(categoryService.createCategory(Mockito.any()))
                 .thenReturn(category);
 
         mockMvc.perform(post("/api/categories/create")
@@ -117,7 +117,7 @@ public class CategoryControllerTest {
         category.setId(1L);
         category.setName("Updated Category");
 
-        Mockito.when(categoryService.update(Mockito.eq(1L), Mockito.any()))
+        Mockito.when(categoryService.updateCategory(Mockito.eq(1L), Mockito.any()))
                 .thenReturn(category);
 
         mockMvc.perform(put("/api/categories/id/{id}", 1L)

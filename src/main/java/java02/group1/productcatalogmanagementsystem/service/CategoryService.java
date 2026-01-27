@@ -2,58 +2,23 @@ package java02.group1.productcatalogmanagementsystem.service;
 
 import java02.group1.productcatalogmanagementsystem.dto.request.CategoryRequest;
 import java02.group1.productcatalogmanagementsystem.entity.Category;
-import jakarta.transaction.Transactional;
-import java02.group1.productcatalogmanagementsystem.repository.ProductRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java02.group1.productcatalogmanagementsystem.repository.CategoryRepository;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
-public class CategoryService  {
-    private final CategoryRepository categoryRepository;
-    private final ProductRepository productRepository;
+public interface CategoryService {
 
-    @Transactional
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
-    }
+    List<Category> getAllCategories();
 
-    @Transactional
-    public List<Category> getCategoriesByName(String name) {
-        return categoryRepository.findByNameContainingIgnoreCase(name);
-    }
+    List<Category> getCategoriesByName(String name);
 
-    @Transactional
-    public Category getById(Long id) {
-        return categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
-    }
+    Category getCategoryById(Long id);
 
-    @Transactional
-    public Category create(CategoryRequest categoryRequest) {
-        Category category = new Category();
-        category.setName(categoryRequest.getName());
-        return categoryRepository.save(category);
-    }
+    Category createCategory(CategoryRequest categoryRequest);
 
-    @Transactional
-    public Category update(Long id, CategoryRequest updatedCategory) {
-        Category existingCategory = getById(id);
-        existingCategory.setName(updatedCategory.getName());
-        return categoryRepository.save(existingCategory);
-    }
+    Category updateCategory(Long id, CategoryRequest updatedCategory);
 
-    @Transactional
-    public void deleteCategory(Long id) {
+    void deleteCategory(Long id);
 
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
-
-        productRepository.deleteByCategory_Id(id);
-        categoryRepository.delete(category);
-    }
 }

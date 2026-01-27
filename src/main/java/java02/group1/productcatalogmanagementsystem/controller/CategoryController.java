@@ -34,13 +34,13 @@ public class CategoryController {
     @GetMapping("/id/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Category> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(categoryService.getById(id));
+        return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Category> create(@RequestBody @Valid CategoryRequest category) {
-        return ResponseEntity.ok(categoryService.create(category));
+        return ResponseEntity.ok(categoryService.createCategory(category));
     }
 
     @PutMapping("/id/{id}")
@@ -48,7 +48,7 @@ public class CategoryController {
     public ResponseEntity<Category> update(
             @PathVariable Long id,
             @RequestBody @Valid CategoryRequest updatedCategory) {
-        return ResponseEntity.ok(categoryService.update(id, updatedCategory));
+        return ResponseEntity.ok(categoryService.updateCategory(id, updatedCategory));
     }
 
     @DeleteMapping("/id/{id}")

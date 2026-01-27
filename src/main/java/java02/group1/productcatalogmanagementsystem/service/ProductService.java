@@ -3,148 +3,23 @@ package java02.group1.productcatalogmanagementsystem.service;
 import java02.group1.productcatalogmanagementsystem.dto.request.ProductRequest;
 import java02.group1.productcatalogmanagementsystem.dto.request.UpdateProductRequest;
 import java02.group1.productcatalogmanagementsystem.dto.response.ProductResponse;
-import java02.group1.productcatalogmanagementsystem.entity.Category;
-import java02.group1.productcatalogmanagementsystem.entity.Product;
-import java02.group1.productcatalogmanagementsystem.repository.CategoryRepository;
-import java02.group1.productcatalogmanagementsystem.repository.ProductRepository;
-import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
-public class ProductService {
+public interface ProductService {
 
-    private final ProductRepository productRepository;
-    private final CategoryRepository categoryRepository;
-    private final ModelMapper modelMapper;
-    private final CloudinaryService cloudinaryService;
+    List<ProductResponse> getActiveProducts(Long categoryId);
 
-    public List<ProductResponse> getActiveProducts(Long categoryId) {
+    ProductResponse getActiveProductById(Long id);
 
-        if (categoryId != null) {
-            categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new EntityNotFoundException("Category not found with id: " + categoryId));
+    List<ProductResponse> searchActiveProductsByName(String name);
 
-            return productRepository.findByStatusAndCategory_Id("ACTIVE", categoryId)
-                    .stream()
-                    .map(this::toResponse)
-                    .toList();
-        }
+    ProductResponse createProduct(ProductRequest dto);
 
-        return productRepository.findByStatus("ACTIVE")
-                .stream()
-                .map(this::toResponse)
-                .toList();
-    }
+    ProductResponse updateProduct(Long id, UpdateProductRequest req);
 
-    public ProductResponse createProduct(ProductRequest dto) {
+    void deleteProduct(Long id);
 
-        Category category = categoryRepository.findById(dto.getCategoryId())
-                .orElseThrow(() -> new EntityNotFoundException("Category not found with id: " + dto.getCategoryId()));
-
-
-        String imageUrl = (dto.getImage() != null && !dto.getImage().isEmpty())
-                ? cloudinaryService.uploadImage(dto.getImage())
-                : null;
-
-        Product product = new Product();
-        product.setName(dto.getName());
-        product.setDescription(dto.getDescription());
-        product.setPrice(dto.getPrice());
-        product.setStockQuantity(dto.getStockQuantity());
-        product.setImageUrl(imageUrl);
-        product.setCategory(category);
-
-        product.setStatus("ACTIVE");
-
-        Product savedProduct = productRepository.save(product);
-        return toResponse(savedProduct);
-    }
-
-    public ProductResponse updateProduct(Long id, UpdateProductRequest req) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
-
-        if (req.getCategoryId() != null) {
-            Category category = categoryRepository.findById(req.getCategoryId())
-                    .orElseThrow(() -> new EntityNotFoundException(
-                            "Category not found with id: " + req.getCategoryId()));
-            product.setCategory(category);
-        }
-
-        product.setName(req.getName());
-        product.setDescription(req.getDescription());
-        product.setPrice(req.getPrice());
-        product.setStockQuantity(req.getStockQuantity());
-
-        // Update imageUrl if provided
-        if (req.getImageUrl() != null && !req.getImageUrl().isBlank()) {
-            product.setImageUrl(req.getImageUrl().trim());
-        }
-
-        if (req.getStatus() != null && !req.getStatus().isBlank()) {
-            product.setStatus(req.getStatus().trim().toUpperCase());
-        }
-
-        Product saved = productRepository.save(product);
-        return toResponse(saved);
-    }
-
-    public void deleteProduct(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
-
-        if (!"ACTIVE".equalsIgnoreCase(product.getStatus())) {
-            throw new EntityNotFoundException("Product is not ACTIVE or already deleted");
-        }
-
-        product.setStatus("INACTIVE");
-        productRepository.save(product);
-    }
-
-    private ProductResponse toResponse(Product p) {
-        ProductResponse resp = modelMapper.map(p, ProductResponse.class);
-
-        if (p.getCategory() != null) {
-            resp.setCategoryId(p.getCategory().getId());
-            resp.setCategoryName(p.getCategory().getName());
-        } else {
-            resp.setCategoryId(null);
-            resp.setCategoryName(null);
-        }
-
-        if (resp.getPrice() == null) {
-            resp.setPrice(java.math.BigDecimal.valueOf(p.getPrice()));
-        }
-
-        resp.setOutOfStock(p.getStockQuantity() == 0);
-
-        return resp;
-    }
-
-    public ProductResponse getActiveProductById(Long id) {
-
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
-
-        if (!"ACTIVE".equalsIgnoreCase(product.getStatus())) {
-            throw new EntityNotFoundException("Product not found");
-        }
-
-        return toResponse(product);
-    }
-
-    public List<ProductResponse> searchActiveProductsByName(String name) {
-
-        return productRepository
-                .findByStatusAndNameContainingIgnoreCase("ACTIVE", name)
-                .stream()
-                .map(this::toResponse)
-                .toList();
-    }
 }
