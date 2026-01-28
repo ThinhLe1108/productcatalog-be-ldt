@@ -113,11 +113,7 @@ public class CartServiceImpl implements CartService {
     }
 
     private void updateTotal(Cart cart) {
-        double total = cartItemRepository.findAll().stream()
-                .filter(item -> item.getCart().getId().equals(cart.getId()))
-                .mapToDouble(CartItem::getSubTotal)
-                .sum();
-
+        double total = cartItemRepository.sumSubTotalByCartId(cart.getId());
         cart.setTotalPrice(total);
         cartRepository.save(cart);
     }
