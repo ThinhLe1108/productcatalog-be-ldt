@@ -5,7 +5,6 @@ import java02.group1.productcatalogmanagementsystem.dto.request.AccountRequest;
 import java02.group1.productcatalogmanagementsystem.dto.request.LoginRequest;
 import java02.group1.productcatalogmanagementsystem.dto.response.AccountResponse;
 
-@Service
 public interface AccountService {
     AccountResponse register(AccountRequest request);
 

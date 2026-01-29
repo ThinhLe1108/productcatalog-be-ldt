@@ -19,19 +19,16 @@ public class CategoryServiceImpl implements CategoryService {
     private final ProductRepository productRepository;
 
     @Override
-    @Transactional
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
 
     @Override
-    @Transactional
     public List<Category> getCategoriesByName(String name) {
         return categoryRepository.findByNameContainingIgnoreCase(name);
     }
 
     @Override
-    @Transactional
     public Category getCategoryById(Long id) {
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found"));

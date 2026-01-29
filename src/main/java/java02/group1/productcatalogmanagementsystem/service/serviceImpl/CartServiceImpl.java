@@ -79,7 +79,6 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    @Transactional
     public CartResponse getCart() {
         Account account = getCurrentAccount();
 

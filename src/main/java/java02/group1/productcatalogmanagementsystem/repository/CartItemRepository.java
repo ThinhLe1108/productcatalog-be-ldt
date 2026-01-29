@@ -13,7 +13,6 @@ import java.util.Optional;
 @Repository
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     Optional<CartItem> findByCartIdAndProductId(Long cartId, Long productId);
-    void deleteByCartIdAndProductId(Long cartId, Long productId);
 
     @Query("SELECT COALESCE(SUM(ci.subTotal), 0) FROM CartItem ci WHERE ci.cart.id = :cartId")
     double sumSubTotalByCartId(@Param("cartId") Long cartId);
