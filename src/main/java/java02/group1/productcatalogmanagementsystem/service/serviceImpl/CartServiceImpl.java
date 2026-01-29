@@ -56,6 +56,18 @@ public class CartServiceImpl implements CartService {
         // Check if item already in cart
         Optional<CartItem> existing = cartItemRepository.findByCartIdAndProductId(cart.getId(), product.getId());
 
+        int newTotalQuantity = request.getQuantity();
+
+        if (existing.isPresent()) {
+            newTotalQuantity += existing.get().getQuantity();
+        }
+
+        if (newTotalQuantity > product.getStockQuantity()) {
+            throw new IllegalArgumentException(
+                    "Not enough stock. Available: " + product.getStockQuantity()
+            );
+        }
+
         if (existing.isPresent()) {
             // Update quantity
             CartItem item = existing.get();
