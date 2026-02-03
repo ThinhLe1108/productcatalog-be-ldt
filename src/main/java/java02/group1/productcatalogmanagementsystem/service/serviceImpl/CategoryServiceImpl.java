@@ -2,10 +2,10 @@ package java02.group1.productcatalogmanagementsystem.service.serviceImpl;
 
 import java02.group1.productcatalogmanagementsystem.dto.request.CategoryRequest;
 import java02.group1.productcatalogmanagementsystem.entity.Category;
-import java02.group1.productcatalogmanagementsystem.repository.CartItemRepository;
 import java02.group1.productcatalogmanagementsystem.service.CategoryService;
 import jakarta.transaction.Transactional;
 import java02.group1.productcatalogmanagementsystem.repository.ProductRepository;
+import java02.group1.productcatalogmanagementsystem.repository.CartItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java02.group1.productcatalogmanagementsystem.repository.CategoryRepository;

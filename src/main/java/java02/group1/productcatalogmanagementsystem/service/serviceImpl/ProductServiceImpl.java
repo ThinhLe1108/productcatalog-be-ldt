@@ -8,13 +8,12 @@ import java02.group1.productcatalogmanagementsystem.entity.Product;
 import java02.group1.productcatalogmanagementsystem.repository.CartItemRepository;
 import java02.group1.productcatalogmanagementsystem.repository.CategoryRepository;
 import java02.group1.productcatalogmanagementsystem.repository.ProductRepository;
-import jakarta.persistence.EntityNotFoundException;
 import java02.group1.productcatalogmanagementsystem.service.CloudinaryService;
 import java02.group1.productcatalogmanagementsystem.service.ProductService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -72,7 +71,6 @@ public class ProductServiceImpl implements ProductService {
         Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("Category not found with id: " + dto.getCategoryId()));
 
-
         String imageUrl = (dto.getImage() != null && !dto.getImage().isEmpty())
                 ? cloudinaryService.uploadImage(dto.getImage())
                 : null;
@@ -84,12 +82,10 @@ public class ProductServiceImpl implements ProductService {
         product.setStockQuantity(dto.getStockQuantity());
         product.setImageUrl(imageUrl);
         product.setCategory(category);
-
         product.setStatus("ACTIVE");
 
         Product savedProduct = productRepository.save(product);
         return toResponse(savedProduct);
-
     }
 
     @Override
@@ -97,8 +93,8 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
 
+        // Validate & update stockQuantity (chỉ set ở đây)
         if (req.getStockQuantity() != null) {
-            // Lấy tổng số lượng sản phẩm này đang nằm trong các giỏ hàng
             Long totalInCarts = cartItemRepository.getTotalQuantityInCarts(id);
 
             if (req.getStockQuantity() < totalInCarts) {
@@ -119,7 +115,6 @@ public class ProductServiceImpl implements ProductService {
         product.setName(req.getName());
         product.setDescription(req.getDescription());
         product.setPrice(req.getPrice());
-        product.setStockQuantity(req.getStockQuantity());
 
         // Update imageUrl if provided
         if (req.getImageUrl() != null && !req.getImageUrl().isBlank()) {
@@ -139,6 +134,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
 
+        // Chặn xoá nếu sản phẩm đang nằm trong giỏ
         if (cartItemRepository.existsByProduct_Id(id)) {
             throw new IllegalArgumentException("Không thể xóa sản phẩm này vì đang có khách hàng thêm vào giỏ hàng.");
         }
@@ -170,5 +166,4 @@ public class ProductServiceImpl implements ProductService {
 
         return resp;
     }
-
 }

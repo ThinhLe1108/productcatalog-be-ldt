@@ -34,14 +34,15 @@ public class CorsConfig extends OncePerRequestFilter {
     private void setCorsHeaders(HttpServletResponse res, HttpServletRequest req) {
         String origin = req.getHeader("Origin");
 
-        // Chỉ cho phép port 5173 
+        // Cho phép localhost và Vercel frontend
         boolean allowed = origin != null && (
                 origin.equals("http://localhost:5173") ||
-                origin.equals("http://127.0.0.1:5173")
+                origin.equals("http://127.0.0.1:5173") ||
+                origin.equals("https://productcatalog-pf31yzavo-minh-chaus-projects-11c47b5c.vercel.app") ||
+                origin.endsWith(".vercel.app")
         );
 
         if (allowed) {
-
             res.setHeader("Access-Control-Allow-Origin", origin);
             res.setHeader("Access-Control-Allow-Credentials", "true");
         } else {

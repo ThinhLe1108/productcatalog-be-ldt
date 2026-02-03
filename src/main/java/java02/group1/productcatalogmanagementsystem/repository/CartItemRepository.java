@@ -23,4 +23,5 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     boolean existsByProduct_Id(Long productId);
 
     boolean existsByProduct_Category_Id(Long categoryId);
+
 }
